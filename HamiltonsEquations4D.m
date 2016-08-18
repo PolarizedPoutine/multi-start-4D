@@ -1,4 +1,4 @@
-function out = hamiltonianDerivative(time, p)
+function out = hamiltonsEquations4D(time, p)
 % Inputs:
 % * time: a 1x2 row vector containing [initialTime, finalTime].
 % * par : a 1x32 row vector containing position, momemtum, mass, and charge
