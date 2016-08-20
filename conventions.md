@@ -31,7 +31,10 @@ Cartesian representation for each geometry described.
 ## Z-matrix
 For 4-ion acetylene the [Z-matrix] (https://en.wikipedia.org/wiki/Z-matrix_(chemistry))
 has 6 parameters. I will always call these individual parameters r12, r23, r34,
-theta13, theta24, and phi. The Z-matrix for acetylene at equilibrium requires
+theta13, theta24, and phi.
+
+The Z-matrix for acetylene at equilibrium requires
 the use of dummy atoms due to the 180° bond angles but we are looking at the
 dynamics of acetylene so we cannot assume a 180° bond angle so we don't need
-to use dummy atoms.
+to use dummy atoms. Ummm wait a second, my Z-matrix works with 180° bond angles.
+I should check this out.

@@ -10,17 +10,25 @@ atoms = size(Z,1);
 C = zeros(atoms,3);
 
 if atoms >= 2
-  r1 = Z(2,2);
-  C(2,1) = r1;
+  r2 = Z(2,2);
+  C(2,1) = r2;
 
   if atoms >= 3
-    r2 = Z(3,2);
+    rC = uint64(Z(3,1));
+    r3 = Z(3,2);
     theta = Z(3,4);
 
-    x2 = r2 * cosd(180 - theta);
-    y2 = r2 * sind(180 - theta);
+    % TODO: Assert what if rC == thetaC ?
 
-    C(3,1:2) = [r1 + x2, y2];
+    if rC == 1
+      x2 = r3 * cosd(180 - theta);
+      y2 = r3 * sind(180 - theta);
+      C(3,1:2) = C(1,1:2) + [x2, y2];
+    else % Must be 2 but TODO: Assert what if it's not 1 or 2!
+      x2 = r3 * cosd(theta);
+      y2 = r3 * sind(theta);
+      C(3,1:2) = [x2, y2];
+    end
 
     if atoms >= 4
       for i = 4:atoms
@@ -35,17 +43,17 @@ if atoms >= 2
         y = r * cosd(phi) * sind(theta);
         z = r * sind(phi) * sind(theta);
 
-        p_rC = C(rC,:); % TODO: p is position here not momentum!
-        p_thetaC = C(thetaC,:);
-        p_phiC = C(phiC,:);
+        r_rC = C(rC,:);
+        r_thetaC = C(thetaC,:);
+        r_phiC = C(phiC,:);
 
-        ab = p_thetaC - p_phiC;
-        bc = (p_rC - p_thetaC) / norm(p_rC - p_thetaC);
+        ab = r_thetaC - r_phiC;
+        bc = (r_rC - r_thetaC) / norm(r_rC - r_thetaC);
         n = cross(ab,bc); n = n / norm(n);
         ncbc = cross(n,bc);
         R = [bc' ncbc' n'];
 
-        C(i,:) = (p_rC' + R*[-x; y; z;])';
+        C(i,:) = (r_rC' + R*[-x; y; z;])';
       end
     end
 end
