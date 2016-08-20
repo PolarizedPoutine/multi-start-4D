@@ -2,7 +2,6 @@ function plotTrajectory4Ion(t, y, masses, charges)
 
   amu = 1.66053886e-27;
   e = 1.60217646e-19;
-  E = 3000;
 
   mC = amu*masses(1); mH = amu*masses(3);
   qC1 = charges(1); qC2 = charges(2); qH1 = charges(3); qH2 = charges(4);
