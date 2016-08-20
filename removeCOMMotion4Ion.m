@@ -7,6 +7,8 @@ function out = removeCOMMotion(p, masses)
   p_y = p(2:3:11);
   p_z = p(3:3:12);
 
+  % Mass ratios are used here, not absolute masses so no need to convert to
+  % kg, we can just use amu.
   massSum = sum(masses);
 
   % We eliminate COM motion to put the particles in the COM frame of motion.
