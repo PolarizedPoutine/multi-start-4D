@@ -2,41 +2,20 @@ function multiStart4Ion(momenta, masses, charges, fOutFilenamePrefix, startingIn
   nMomenta = size(momenta, 1);
 
   parfor i = startingIndex:nMomenta
-    fOutFilename = strcat(fOutFilenamePrefix, '_G', sprintf('%05d',i), '.log');
-    fOut = fopen(fOutFilename, 'a');
+    % fOutFilename = strcat(fOutFilenamePrefix, '_G', sprintf('%05d',i), '.log');
+    % fOut = fopen(fOutFilename, 'a');
 
     p = momenta(i,:);
-    p = removeCOMMotion4Ion(p);
+    p = removeCOMMotion4Ion(p, masses);
     p = rotateMomentum4Ion(p);
 
     pGoal = p;
     residualNormObjective = @(g)residualNorm(g, pGoal, masses, charges);
 
-    % These will be our bounds for the multi start algorithm. The algorithm will
-    % not search outside of these bounds. I have picked these bounds to include
-    % a wide variety of possible geometries but nothing super unrealistic (e.g.
-    % largely compressed bonds). Lengths are in picometers and angles are in
-    % degrees because computers don't like numbers that are too small (it seems
-    % to be harder to converge when one parameter is ~1e-12 and another ~1e2.)
-    % and I thought it would be nice to keep all numbers in the same order of
-    % magnitude.
-    r_12LowerBound  = 100;
-    r_12UpperBound  = 500;
-    r_23LowerBound  = 100;
-    r_23UpperBound  = 500;
-    thetaLowerBound = 140;
-    thetaUpperBound = 180;
-    lowerBounds = [r_12LowerBound r_23LowerBound thetaLowerBound];
-    upperBounds = [r_12UpperBound r_23UpperBound thetaUpperBound];
+    lowerBounds = [0 0 0 0 0 0];
+    upperBounds = [1000 1000 1000 180 180 180];
 
-    % You have to give the multi start algorithm a starting point so I thought
-    % might as well give it some middle point. It's not very sensitive to the
-    % starting point which is good and it's going to guess different points
-    % anyways.
-    r_12Initial  = 250; % TODO: 115
-    r_23Initial  = 250; % TODO: 156
-    thetaInitial = 170; % TODO: 175
-    initialGeometry = [r_12Initial r_23Initial thetaInitial];
+    initialGeometry = [106 120 106 179 179 0];
 
     options = optimoptions('fmincon', 'Algorithm', 'interior-point', 'Display', ...
       'off', 'MaxFunEvals', 3000);
@@ -47,7 +26,7 @@ function multiStart4Ion(momenta, masses, charges, fOutFilenamePrefix, startingIn
     [g, fval, exitflag, output, solutions] = run(ms, problem, runs);
 
     fprintf('G%05d DONE @ %s.\n', i, datestr(now));
-    fprintf('G%05d Best geometry found: (%.2f pm, %.2f pm, %.2f deg) with log residual norm %.2f and exit flag %d.\n', i, g(1), g(2), g(3), fval, exitflag);
+    %fprintf('G%05d Best geometry found: (%.2f pm, %.2f pm, %.2f deg) with log residual norm %.2f and exit flag %d.\n', i, g(1), g(2), g(3), fval, exitflag);
     fprintf('G%05d Solver: funcCountNumber:       %d\n', i, output.funcCount);
     fprintf('G%05d         localSolverIncomplete: %d\n', i, output.localSolverIncomplete);
     fprintf('G%05d         localSolverNoSolution: %d\n', i, output.localSolverNoSolution);
@@ -58,17 +37,17 @@ function multiStart4Ion(momenta, masses, charges, fOutFilenamePrefix, startingIn
     numSolutionsFound = size([solutions.Fval], 2);
 
     % We put each distinct solution we found into a row vector and  print them all.
-    mostLikelyGeometries = [i*ones(numSolutionsFound, 1) reshape([solutions.X], 3, numSolutionsFound)' [solutions.Fval]' [solutions.Exitflag]'];
+    mostLikelyGeometries = [i*ones(numSolutionsFound, 1) reshape([solutions.X], 6, numSolutionsFound)' [solutions.Fval]' [solutions.Exitflag]'];
 
-    fprintf('G%05d Writing %s.\n', i, fOutFilename);
+    %fprintf('G%05d Writing %s.\n', i, fOutFilename);
     for j = 1:numSolutionsFound
-      fprintf('G%05d G %d\t%3.6f\t%3.6f\t%3.6f\t%2.2f\t%d\n', i, mostLikelyGeometries(j,:));
-      fprintf(fOut, '%d\t%3.6f\t%3.6f\t%3.6f\t%2.2f\t%d\n', mostLikelyGeometries(j,:));
+      fprintf('G%05d G %d\t%3.6f\t%3.6f\t%3.6f\t%3.6f\t%3.6f\t%3.6f\t%2.2f\t%d\n', i, mostLikelyGeometries(j,:));
+      %fprintf(fOut, '%d\t%3.6f\t%3.6f\t%3.6f\t%2.2f\t%d\n', mostLikelyGeometries(j,:));
     end
 
-    fprintf('\n');
-    fprintf(fOut,'\n');
-    fclose(fOut);
+    % fprintf('\n');
+    % fprintf(fOut,'\n');
+    % fclose(fOut);
   end
 end
 
@@ -79,8 +58,7 @@ end
 % returns the log10 of the norm of the difference between the two momentum
 % squared.
 function rn = residualNorm(g, pGoal, masses, charges)
-  g = [1e-12*g(1) 1e-12*g(2) g(3)];
-  p = simulateMomentum4Ion(g, masses, charges);
-  p = p(4:12);
+  g = [1e-12*g(1:3) g(4:6)];
+  p = simulateMomentum4Ion(g, masses, charges, false);
   rn = log10(norm(pGoal - p)^2);
 end

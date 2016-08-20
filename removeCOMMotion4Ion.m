@@ -17,5 +17,5 @@ function out = removeCOMMotion(p, masses)
   p_z = p_z - sum(p_y) .* masses/massSum;
 
   % Putting the vectors back into the original format.
-  out = reshape([p_X; p_Y; p_Z], 1, 12);
+  out = reshape([p_x; p_y; p_z], 1, 12);
 end
