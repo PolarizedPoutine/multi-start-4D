@@ -36,7 +36,7 @@ if atoms >= 2
         r = Z(i,2);
         thetaC = uint64(Z(i,3));
         theta = Z(i,4);
-        phiC = uint64(Z(i,5))
+        phiC = uint64(Z(i,5));
         phi = Z(i,6);
 
         x = r * cosd(theta);

@@ -1,7 +1,10 @@
 function out = simulateMomentum4Ion(g, masses, charges)
-  r = geometryToZMatrix(g);
+  r = ZMatrixToCartesian(geometryToZMatrix(g));
+  r = r(:)';
+
   p_0 = zeros(1,12);
   p = timeEvolveMomenta4Ion([r p_0], masses, charges);
+
   out = rotateMomentum4Ion(p);
 end
 

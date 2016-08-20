@@ -25,7 +25,7 @@ p_2 = Ry(phi)*p_2; % TODO: WHY NO MINUS?
 R = Ry(phi)*R;
 
 p_3 = R*p_3;
-p_4 = -(p_1 + p_2 + p_3);
+p_4 = -(p_1 + p_2 + p_3); % TODO: Double check this!
 
 % Put everything back into a row vector.
 p_1 = p_1'; p_2 = p_2'; p_3 = p_3'; p_4 = p_4';
