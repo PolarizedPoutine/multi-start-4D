@@ -37,10 +37,10 @@ r34 = sqrt((p(7)-p(10))^2 + (p(8)-p(11))^2 + (p(9)-p(12))^2);
 % These quantities are produced by taking the first derivative of the
 % Hamiltonian with respect to the appropriate variable.
 
-v1 = p(13:15)' / m1;
-v2 = p(16:18)' / m2;
-v3 = p(19:21)' / m3;
-v4 = p(22:24)' / m4;
+v1 = p(13:15) / m1;
+v2 = p(16:18) / m2;
+v3 = p(19:21) / m3;
+v4 = p(22:24) / m4;
 
 % pDot in this case is just the pairwise Coulomb force so just call it F_ij.
 F12 = (k*q1*q2 / r12^3) * [(p(1)-p(4));  (p(2)-p(5));  (p(3)-p(6));];
@@ -60,5 +60,5 @@ pDot = [v1; v2; v3; v4; p1Dot; p2Dot; p3Dot; p4Dot;];
 
 % Output must be of the same form as the input parameters p so we append the
 % mass and charge values that were initially there.
-out = [parDot; p(25:32)];
+out = [pDot; p(25:32)];
 end
