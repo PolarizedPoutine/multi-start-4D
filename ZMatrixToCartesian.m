@@ -19,15 +19,13 @@ if atoms >= 2
     theta = Z(3,4);
 
     % TODO: Assert what if rC == thetaC ?
+    x2 = r3 * cosd(theta);
+    y2 = r3 * sind(theta);
 
     if rC == 1
-      x2 = r3 * cosd(180 - theta);
-      y2 = r3 * sind(180 - theta);
       C(3,1:2) = C(1,1:2) + [x2, y2];
     else % Must be 2 but TODO: Assert what if it's not 1 or 2!
-      x2 = r3 * cosd(theta);
-      y2 = r3 * sind(theta);
-      C(3,1:2) = [x2, y2];
+      C(3,1:2) = C(2,1:2) + [x2, y2];
     end
 
     if atoms >= 4
