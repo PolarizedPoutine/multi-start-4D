@@ -5,9 +5,9 @@ function multiStart4Ion(momenta, masses, charges, fOutFilenamePrefix, startingIn
     % fOutFilename = strcat(fOutFilenamePrefix, '_G', sprintf('%05d',i), '.log');
     % fOut = fopen(fOutFilename, 'a');
 
-    p = momenta(i,:)
-    p = removeCOMMotion4Ion(p, masses)
-    p = rotateMomentum4Ion(p)
+    p = momenta(i,:);
+    p = removeCOMMotion4Ion(p, masses);
+    p = rotateMomentum4Ion(p);
 
     pGoal = p;
     residualNormObjective = @(g)residualNorm(g, pGoal, masses, charges);
@@ -15,14 +15,14 @@ function multiStart4Ion(momenta, masses, charges, fOutFilenamePrefix, startingIn
     lowerBounds = [0 0 0 0 0 0];
     upperBounds = [1000 1000 1000 180 180 180];
 
-    initialGeometry = [106 120 106 172 175 10];
+    initialGeometry = [106 120 106 179 179 0];
 
     options = optimoptions('fmincon', 'Algorithm', 'interior-point', 'Display', ...
-      'iter', 'MaxFunEvals', 3000);
+      'off', 'MaxFunEvals', 3000);
     problem = createOptimProblem('fmincon', 'objective', residualNormObjective, ...
       'lb', lowerBounds, 'ub', upperBounds, 'x0', initialGeometry, 'options', ...
       options);
-    ms = MultiStart('UseParallel', 'always', 'Display', 'iter', 'StartPointsToRun', 'bounds');
+    ms = MultiStart('UseParallel', 'always', 'Display', 'off', 'StartPointsToRun', 'bounds');
     [g, fval, exitflag, output, solutions] = run(ms, problem, runs);
 
     fprintf('G%05d DONE @ %s.\n', i, datestr(now));
