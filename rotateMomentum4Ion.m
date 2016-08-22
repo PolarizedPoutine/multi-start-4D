@@ -30,11 +30,11 @@ p_4 = -(p_1 + p_2 + p_3); % TODO: Double check this!
 % Put everything back into a row vector.
 p_1 = p_1'; p_2 = p_2'; p_3 = p_3'; p_4 = p_4';
 
-% Set the z components (and also y in case of carbon) to zero so
-% they all have exactly the same value rather than 0.0000 and
-% -0.0000, etc.
-% p_1 = [p_1(1) 0 0];
-% p_2 = [p_2(1:2) 0];
+% Set the yz components of C1 and the z component of C2 to to zero so they all
+% have exactly the same value rather than 0.0000 and -0.0000, etc. This will
+% prevent catastrophic round off errors later down the road (e.g. 2e-39/1e-40).
+p_1 = [p_1(1) 0 0];
+p_2 = [p_2(1:2) 0];
 
 out = [p_1 p_2 p_3 p_4];
 end
